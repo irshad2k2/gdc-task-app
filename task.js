@@ -1,3 +1,5 @@
+const fs = require("fs");
+
 // Print Help
 const help = () => {
   console.log(`Usage :-
@@ -9,12 +11,44 @@ $ ./task help                 # Show usage
 $ ./task report               # Statistics`);
 };
 
+// Read and Write to file
+const readFile = (filePath) => {
+  if (!fs.existsSync(filePath)) {
+    return [];
+  }
+  return fs
+    .readFileSync(filePath, "utf-8")
+    .trim()
+    .split("\n")
+    .filter((line) => line);
+};
+
+const writeFile = (filePath, data) => {
+  fs.writeFileSync(filePath, data.join("\n") + "\n", "utf-8");
+};
+
+// Add Task
+const addTask = (priority, task) => {
+  if (!priority || !task) {
+    console.log("Error: Missing tasks string. Nothing added!");
+    return;
+  }
+  const tasks = readFile("task.txt");
+  tasks.push(`${priority} ${task}`);
+  tasks.sort((a, b) => parseInt(a.split(" ")[0]) - parseInt(b.split(" ")[0]));
+  writeFile("task.txt", tasks);
+  console.log(`Added task: "${task}" with priority ${priority}`);
+};
+
 // Main Execution
 const args = process.argv.slice(2);
 
 switch (args[0]) {
   case "help":
     help();
+    break;
+  case "add":
+    addTask(args[1], args.slice(2).join(" "));
     break;
   default:
     help();
