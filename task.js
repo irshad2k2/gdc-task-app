@@ -40,6 +40,19 @@ const addTask = (priority, task) => {
   console.log(`Added task: "${task}" with priority ${priority}`);
 };
 
+// List Tasks
+const listTasks = () => {
+  const tasks = readFile("task.txt");
+  if (tasks.length === 0) {
+    console.log("There are no pending tasks!");
+  } else {
+    tasks.forEach((task, index) => {
+      const [priority, ...taskText] = task.split(" ");
+      console.log(`${index + 1}. ${taskText.join(" ")} [${priority}]`);
+    });
+  }
+};
+
 // Main Execution
 const args = process.argv.slice(2);
 
@@ -49,6 +62,9 @@ switch (args[0]) {
     break;
   case "add":
     addTask(args[1], args.slice(2).join(" "));
+    break;
+  case "ls":
+    listTasks();
     break;
   default:
     help();
