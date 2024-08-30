@@ -62,7 +62,7 @@ const deleteTask = (index) => {
   }
   if (index < 1 || index > tasks.length) {
     console.log(
-      `Error: task with index #${index} does not exist. Nothing deleted.`
+      `Error: task with index #${index} does not exist. Nothing deleted.`,
     );
     return;
   }
@@ -88,11 +88,28 @@ const markDone = (index) => {
       .splice(index - 1, 1)[0]
       .split(" ")
       .slice(1)
-      .join(" ")
+      .join(" "),
   );
   writeFile("task.txt", tasks);
   writeFile("completed.txt", completed);
   console.log("Marked item as done.");
+};
+
+// Report
+const report = () => {
+  const tasks = readFile("task.txt");
+  const completed = readFile("completed.txt");
+
+  console.log(`Pending : ${tasks.length}`);
+  tasks.forEach((task, index) => {
+    const [priority, ...taskText] = task.split(" ");
+    console.log(`${index + 1}. ${taskText.join(" ")} [${priority}]`);
+  });
+
+  console.log(`\nCompleted : ${completed.length}`);
+  completed.forEach((task, index) => {
+    console.log(`${index + 1}. ${task}`);
+  });
 };
 
 // Main Execution
@@ -113,6 +130,9 @@ switch (args[0]) {
     break;
   case "done":
     markDone(parseInt(args[1]));
+    break;
+  case "report":
+    report();
     break;
   default:
     help();
