@@ -53,6 +53,24 @@ const listTasks = () => {
   }
 };
 
+// Delete Task
+const deleteTask = (index) => {
+  const tasks = readFile("task.txt");
+  if (typeof index === "undefined" || isNaN(index)) {
+    console.log("Error: Missing NUMBER for deleting tasks.");
+    return;
+  }
+  if (index < 1 || index > tasks.length) {
+    console.log(
+      `Error: task with index #${index} does not exist. Nothing deleted.`
+    );
+    return;
+  }
+  tasks.splice(index - 1, 1);
+  writeFile("task.txt", tasks);
+  console.log(`Deleted task #${index}`);
+};
+
 // Main Execution
 const args = process.argv.slice(2);
 
@@ -65,6 +83,9 @@ switch (args[0]) {
     break;
   case "ls":
     listTasks();
+    break;
+  case "del":
+    deleteTask(parseInt(args[1]));
     break;
   default:
     help();
