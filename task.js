@@ -71,6 +71,30 @@ const deleteTask = (index) => {
   console.log(`Deleted task #${index}`);
 };
 
+// Mark as Done
+const markDone = (index) => {
+  const tasks = readFile("task.txt");
+  if (typeof index === "undefined" || isNaN(index)) {
+    console.log("Error: Missing NUMBER for marking tasks as done.");
+    return;
+  }
+  if (index < 1 || index > tasks.length) {
+    console.log(`Error: no incomplete item with index #${index} exists.`);
+    return;
+  }
+  const completed = readFile("completed.txt");
+  completed.push(
+    tasks
+      .splice(index - 1, 1)[0]
+      .split(" ")
+      .slice(1)
+      .join(" ")
+  );
+  writeFile("task.txt", tasks);
+  writeFile("completed.txt", completed);
+  console.log("Marked item as done.");
+};
+
 // Main Execution
 const args = process.argv.slice(2);
 
@@ -86,6 +110,9 @@ switch (args[0]) {
     break;
   case "del":
     deleteTask(parseInt(args[1]));
+    break;
+  case "done":
+    markDone(parseInt(args[1]));
     break;
   default:
     help();
